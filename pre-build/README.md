@@ -16,5 +16,5 @@ If this was not done, then
 
 #### Stats
 
-Without `pre-build`: dist folder size is ~22MB
-With `pre-build`: dist folder size is ~5MB
+**Without `pre-build`:** dist folder size is ~22MB  
+**With `pre-build`:** dist folder size is ~5MB
