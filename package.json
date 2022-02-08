@@ -4,27 +4,30 @@
 	"description": "This plugin will add Tailwind Color Styles to your figma file. You can choose between the available presets.",
 	"license": "ISC",
 	"scripts": {
+		"build-css": "sass pre-build/ui/index.scss src/generated/style.min.css --style=compressed --no-source-map",
+		"watch-css": "sass --watch pre-build/ui:pre-build/ui --style=compressed --no-source-map",
+		"serve-ui": "python -m SimpleHTTPServer 3000",
 		"clean-gen": "rm -rf -v ./src/generated/*",
-		"prebuild": "npm run clean-gen && node ./pre-build/index.mjs",
+		"codegen": "node ./pre-build/index.mjs",
+		"prebuild": "npm run clean-gen && npm run build-css && npm run codegen && npm run format",
 		"build": "webpack --mode=production",
 		"build:watch": "webpack --mode=development --watch",
-		"prettier:format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json}' "
+		"format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json}' "
 	},
 	"dependencies": {
 		"color": "^4.0.0",
 		"react": "^17.0.2",
-		"react-dom": "^17.0.2"
+		"react-dom": "^17.0.2",
+		"sass": "^1.49.7"
 	},
 	"devDependencies": {
 		"@figma/plugin-typings": "^1.40.0",
 		"@types/react": "^17.0.11",
 		"@types/react-dom": "^17.0.7",
-		"clean-css": "^4.2.3",
 		"css-loader": "^5.0.1",
 		"html-webpack-inline-source-plugin": "^0.0.10",
 		"html-webpack-plugin": "^3.2.0",
 		"prettier": "^2.3.1",
-		"purgecss": "^4.0.3",
 		"style-loader": "^2.0.0",
 		"ts-loader": "^8.0.11",
 		"typescript": "^4.1.2",

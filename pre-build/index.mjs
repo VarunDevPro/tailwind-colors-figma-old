@@ -6,7 +6,6 @@ import tailwindUIPalette from './config/palettes/tailwindui.mjs';
 import {writeToGenerated} from './utils/writeToGenerated.mjs';
 
 import {getParsedColors, getJSFileContent} from './colors.mjs';
-import bundledCSS from './css.mjs';
 
 writeToGenerated(
   getJSFileContent(getParsedColors(tailwindcss307)),
@@ -24,7 +23,7 @@ writeToGenerated(
   getJSFileContent(getParsedColors(tailwindUIPalette)),
   'tailwindUIPalette.ts'
 );
-writeToGenerated(bundledCSS, 'style.min.css');
+
 writeToGenerated(
   `# Generated files
 
@@ -33,4 +32,4 @@ writeToGenerated(
   'README.md'
 );
 
-console.log('Pre-Build Successful');
+console.log('Codegen Successful');

@@ -1,18 +1,13 @@
-import CleanCSS from 'clean-css';
-import { PurgeCSS } from "purgecss";
-import path from "path";
-import { fileURLToPath } from "url";
+import sass from 'sass';
+const scssFilename = './pre-build/ui/index.scss';
 
-// ESM specific features
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const purgeCSSResult = await new PurgeCSS().purge({
-  content: [__dirname + "/ui/**/*.html"],
-  css: [__dirname + "/ui/**/*.css"],
+const result = sass.compileString({
+  file: scssFilename,
+  sourceMapContents: false,
+  sourceMapEmbed: false,
+  outputStyle: 'compressed',
 });
 
-const purged = purgeCSSResult.map((x) => x.css).join("\n");
-const minified = new CleanCSS({}).minify(purged).styles;
+const bundledCSS = result.css;
 
-export default minified;
+export default bundledCSS;

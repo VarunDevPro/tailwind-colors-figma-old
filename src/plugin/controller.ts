@@ -5,7 +5,7 @@ import tailwindcss307 from '../generated/tailwindcss307';
 import {palettes} from '../constants';
 
 figma.showUI(__html__, {
-  height: 270,
+  height: 375,
   width: 360,
   title: 'Add Tailwind Color Styles',
 });
@@ -30,7 +30,13 @@ figma.ui.onmessage = (msg) => {
       colors = tailwindUIPalette;
     }
 
-    colors.forEach(({name, color}) => handleSolidColor(name, color));
+    if (msg.folder) {
+      colors.forEach(({name, color}) =>
+        handleSolidColor(msg.folder + '/' + name, color)
+      );
+    } else {
+      colors.forEach(({name, color}) => handleSolidColor(name, color));
+    }
 
     if (colors.length > 0) {
       figma.notify('✔ Added Color Styles');

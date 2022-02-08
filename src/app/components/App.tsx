@@ -8,6 +8,7 @@ const App = ({}) => {
   const btnRef = React.useRef(null);
 
   const [palette, setPalette] = React.useState(palettes.TAILWIND_CSS_307);
+  const [folderName, setFolderName] = React.useState('');
 
   React.useEffect(() => {
     btnRef.current.focus();
@@ -17,9 +18,19 @@ const App = ({}) => {
     setPalette(event.target.value);
   };
 
+  const handleFolderNameChange = (event) => {
+    setFolderName(event.target.value);
+  };
+
   const onAdd = () => {
     parent.postMessage(
-      {pluginMessage: {type: 'add-styles', from: palette}},
+      {
+        pluginMessage: {
+          type: 'add-styles',
+          from: palette,
+          folder: folderName,
+        },
+      },
       '*'
     );
   };
@@ -29,41 +40,32 @@ const App = ({}) => {
   };
 
   return (
-    <div className="px-6 pt-4 pb-2">
-      <div className="mb-4 rounded-md bg-yellow-50 p-4">
-        <div className="flex">
-          <div className="flex-shrink-0">
+    <div className="main">
+      <div className="alert_container">
+        <div className="alert_content">
+          <div className="alert_icon_container">
             <svg
-              className="h-5 w-5 text-yellow-400"
-              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              <path
-                fillRule="evenodd"
-                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clipRule="evenodd"
-              />
+              <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
             </svg>
           </div>
-          <div className="ml-3">
-            <h3 className="text-sm leading-5 font-medium text-yellow-800">
-              Note
-            </h3>
-            <div className="text-sm leading-5 text-yellow-700">
+          <div className="">
+            <h3 className="">Note</h3>
+            <div className="">
               <p>
-                This action will add styles in your file. I use this plugin only
-                on a brand new file.
+                This action will add multiple color styles in your design file.
+                For grouping, please provide a folder name.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="my-4">
-        <label
-          htmlFor="palette"
-          className="block text-sm font-medium text-gray-700"
-        >
+      <div className="">
+        <label htmlFor="palette" className="label">
           Choose Palette
         </label>
         <select
@@ -71,7 +73,7 @@ const App = ({}) => {
           name="palette"
           value={palette}
           onChange={handlePaletteChange}
-          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="select"
         >
           <option value={palettes.TAILWIND_CSS_307}>Tailwind CSS v3.0.7</option>
           <option value={palettes.TAILWIND_CSS_224}>Tailwind CSS v2.2.4</option>
@@ -80,18 +82,27 @@ const App = ({}) => {
         </select>
       </div>
 
-      <button
-        ref={btnRef}
-        id="add"
-        onClick={onAdd}
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150"
-      >
+      <div className="">
+        <label htmlFor="folder_name" className="label">
+          Folder name (Optional)
+        </label>
+        <input
+          type="text"
+          id="folder_name"
+          name="folder_name"
+          placeholder="e.g., tailwind"
+          value={folderName}
+          onChange={handleFolderNameChange}
+          className="input"
+        />
+      </div>
+
+      <br />
+
+      <button ref={btnRef} id="add" onClick={onAdd} className="button accept">
         Add
       </button>
-      <button
-        onClick={onCancel}
-        className="ml-4 py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out"
-      >
+      <button onClick={onCancel} className="button cancel">
         Cancel
       </button>
     </div>
