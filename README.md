@@ -9,12 +9,15 @@ This plugin will add Tailwind Color Styles to your figma file. You can choose be
 * Run `yarn build:watch` to start webpack in watch mode.
 * Open `Figma` -> `Plugins` -> `Development` -> `New Plugin...` and choose `manifest.json` file from this repo.
 
-⭐ To change the UI of your plugin (the react code), start editing [App.tsx](./src/app/components/App.tsx).  
-⭐ To interact with the Figma API edit [controller.ts](./src/plugin/controller.ts).  
-⭐ Read more on the [Figma API Overview](https://www.figma.com/plugin-docs/api/api-overview/).
+## For developers
+* To change the UI of your plugin (the react code), start editing [App.tsx](./src/app/components/App.tsx).  
+* To interact with the Figma API edit [controller.ts](./src/plugin/controller.ts).  
+* Read more on the [Figma API Overview](https://www.figma.com/plugin-docs/api/api-overview/).
 
 ## Toolings
 This repo is using:
+* Yarn
 * React + Webpack
 * TypeScript
-* Prettier precommit hook
+* Sass
+* Prettier

@@ -9,10 +9,40 @@ const App = ({}) => {
 
   const [palette, setPalette] = React.useState(palettes.TAILWIND_CSS_307);
   const [folderName, setFolderName] = React.useState('');
+  const [lastUsedFolderName, setLastUsedFolderName] = React.useState('');
+  const [showNotice, setShowNotice] = React.useState(false);
 
+  // Message Handler
+  const handleMessage = React.useCallback(
+    (event) => {
+      const msg = event.data.pluginMessage;
+
+      if (msg.type === 'set-show-notice') {
+        setShowNotice(msg.value);
+      }
+
+      if (msg.type === 'set-last-used-folder-name') {
+        setLastUsedFolderName(msg.value);
+      }
+    },
+    [setShowNotice, setLastUsedFolderName]
+  );
+
+  // Autofocus add button
   React.useEffect(() => {
     btnRef.current.focus();
   }, []);
+
+  // Load User Config
+  React.useEffect(() => {
+    parent.postMessage({pluginMessage: {type: 'fetch-config'}}, '*');
+  }, []);
+
+  // Add listener to messages from figma
+  React.useEffect(() => {
+    onmessage = handleMessage;
+    return () => (onmessage = null);
+  }, [handleMessage]);
 
   const handlePaletteChange = (event) => {
     setPalette(event.target.value);
@@ -22,47 +52,72 @@ const App = ({}) => {
     setFolderName(event.target.value);
   };
 
-  const onAdd = () => {
+  const handleAcceptNotice = () => {
+    parent.postMessage({pluginMessage: {type: 'accept-notice'}}, '*');
+  };
+
+  const handleCancel = () => {
+    parent.postMessage({pluginMessage: {type: 'cancel'}}, '*');
+  };
+
+  // Add color styles
+  const handleAdd = () => {
     parent.postMessage(
       {
         pluginMessage: {
           type: 'add-styles',
           from: palette,
-          folder: folderName,
+          folder: folderName.trim(),
         },
       },
       '*'
     );
   };
 
-  const onCancel = () => {
-    parent.postMessage({pluginMessage: {type: 'cancel'}}, '*');
-  };
-
   return (
     <div className="main">
-      <div className="alert_container">
-        <div className="alert_content">
-          <div className="alert_icon_container">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
-            </svg>
-          </div>
-          <div className="">
-            <h3 className="">Note</h3>
+      {showNotice && (
+        <div className="alert_container">
+          <div className="alert_content">
+            <div className="alert_icon_container">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                ></path>
+              </svg>
+            </div>
             <div className="">
-              <p>
-                This action will add multiple color styles in your design file.
-                For grouping, please provide a folder name.
-              </p>
+              <h3 className="">Note</h3>
+              <div>{showNotice}</div>
+              <div className="">
+                <p>
+                  This action will add multiple color styles in your design
+                  file. For grouping, please provide a folder name.
+                </p>
+              </div>
+              <button className="button alert" onClick={handleAcceptNotice}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Okay
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="">
         <label htmlFor="palette" className="label">
@@ -95,14 +150,30 @@ const App = ({}) => {
           onChange={handleFolderNameChange}
           className="input"
         />
+        {lastUsedFolderName && folderName !== lastUsedFolderName && (
+          <p className="folder_names">
+            Last used:{' '}
+            <button
+              className="button folder_name"
+              onClick={() => setFolderName(lastUsedFolderName)}
+            >
+              {lastUsedFolderName}
+            </button>
+          </p>
+        )}
       </div>
 
       <br />
 
-      <button ref={btnRef} id="add" onClick={onAdd} className="button accept">
+      <button
+        ref={btnRef}
+        id="add"
+        onClick={handleAdd}
+        className="button accept"
+      >
         Add
       </button>
-      <button onClick={onCancel} className="button cancel">
+      <button onClick={handleCancel} className="button cancel">
         Cancel
       </button>
     </div>
