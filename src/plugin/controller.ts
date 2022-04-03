@@ -30,9 +30,7 @@ const handleAddStyles = async (msg) => {
 
   if (msg.folder) {
     // Update prefix to folder name
-    // Update storage
     prefix = msg.folder + '/';
-    await figma.clientStorage.setAsync(FOLDER_NAME_STORAGE_KEY, msg.folder);
   }
 
   colors.forEach(({name, color}) => handleSolidColor(prefix + name, color));
@@ -41,6 +39,11 @@ const handleAddStyles = async (msg) => {
     figma.notify('✔ Added Color Styles');
   } else {
     figma.notify('⚠ No styles added');
+  }
+
+  if (msg.folder) {
+    // Update storage
+    await figma.clientStorage.setAsync(FOLDER_NAME_STORAGE_KEY, msg.folder);
   }
 };
 
